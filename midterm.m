@@ -378,7 +378,7 @@ sys_sim = ss(A_2, B_2, C_2, D_2);
 
 % 10% increase from hover
 u_step = u0 *1.1; 
-u_step(4) = u_step(4) + 0.1;
+
 
 U_delta = (u_step - u0)'; 
 
@@ -399,8 +399,7 @@ sgtitle('16-State Model Step Response');
 
 
 
-%% animate the druh
-% 3D Animation of Quadcopter Step Response
+%% Albert
 
 % 1. Extract Raw States (Inertial NED & Euler Angles in rads)
 pn_sim = x(:, 1);
