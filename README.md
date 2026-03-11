@@ -1,5 +1,3 @@
-# drone_midterm_fly
-
 # Autonomous Quadcopter Flight Control System (Crazyflie 2.1)
 
 ## Overview
@@ -74,14 +72,12 @@ Source:  https://www.bitcraze.io/documentation/system/platform/cf2-coordinate-sy
 
 ### Prerequisites
 
-* MATLAB (Tested on R202Xx)
-* Control System Toolbox
+* MATLAB (Tested on R2025b)
 
 ### Running the Simulation
 
 1. Clone the repository to your local machine.
-2. Navigate to the `sim/` directory.
-3. Run `main_sim.m` to execute the full nonlinear step response and launch the 3D trajectory animation.
+2. TBD
 
 
 
@@ -90,6 +86,20 @@ Source:  https://www.bitcraze.io/documentation/system/platform/cf2-coordinate-sy
   
 crazy fly. 
 
-<img width="650" height="450" alt="image" src="https://github.com/user-attachments/assets/dba2955a-6ffd-4dec-83f9-82fa618b9137" />
+## Dedicated to Ham and his Predecesors, Albert I - VI (monkeys)
+Ham (July 1957 – January 19, 1983), a chimpanzee also known as Ham the Chimp and Ham the Astrochimp, was the first great ape launched into space. On January 31, 1961, Ham flew a suborbital flight on the Mercury-Redstone 2 mission, part of the U.S. space program's Project Mercury.[1][2]
+
+Ham was known as "No. 65" before he safely returned to Earth, when he was named after an acronym for the laboratory that prepared him for his historic mission—the Holloman Aerospace Medical Center, located at Holloman Air Force Base in New Mexico, southwest of Alamogordo. His name was also in honor of the commander of Holloman Aeromedical Laboratory, Lieutenant Colonel Hamilton "Ham" Blackshear.
+
+Albert I was a rhesus macaque monkey and the first mammal launched on a rocket (V-2 Rocket "Blossom No. 3") on June 11, 1948.[1][2] The launch was staged at White Sands Proving Ground, Las Cruces, New Mexico. Albert I, a nine-pound monkey, was anesthetized and placed inside the rocket's crew capsule in the nose of the V-2 rocket.[2] The flight did not reach outer space.
+
+Albert II was a male rhesus macaque monkey who was the first primate and first mammal to travel to outer space. He flew from Holloman Air Force Base in New Mexico, United States, to an altitude of 83 miles (134 km) aboard Blossom No. 4B, a U.S. V-2 sounding rocket on June 14, 1949. Albert died upon landing after a parachute failure caused his capsule to strike the ground at high speed. Albert's respiratory and cardiological data were recorded up to the moment of impact. 
+
+After Albert II, several other monkeys named Albert followed. Albert III was killed before he reached space when the V-2 rocket exploded during the ascent. Albert IV met a similar fate as Albert II - he reached space (though several miles lower than II), and died on impact with the ground due to a parachute release malfunction. Following this, NASA switched to using Aerobee rockets, and on April 18, 1951, a monkey, possibly called Albert V, died once again due to parachute failure during descent. Two months after Soviet space dogs Dezik and Tsygan survived a July 1951 spaceflight, Yorick, also called Albert VI, attained a non-space height of 72 km (44.7 mi) but did become the first primate to survive a landing. He died two hours later.
+
+  
 <img width="500" height="890" alt="image" src="https://github.com/user-attachments/assets/25e4a3ff-32e5-4954-8021-3ca7754c9c14" />
+
+  
+Depicted: Ham the Chimp. 
 
