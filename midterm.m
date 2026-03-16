@@ -632,17 +632,15 @@ close all
 
 % reduced state can be pe, v, phi, pv
 A_pe = [0 1 0 0;
-        0 0 -9.81 0;
+        0 0 9.81 0;
         0 0 0 1;
         0 0 0 0];
 
 B_pe = [0; 0; 0; 1/J(1,1)];
-
-A_pe_aug = [0 1 0 0 0;
-            0 0 -9.81 0 0;
-            0 0 0 1 0;
-            0 0 0 0 0;
-            1 0 0 0 0];
+[n_rows,n_col] = size(A_pe);
+A_pe_aug = [A_pe zeros(n_rows,1);
+            1, zeros(1,n_col)];
+            
 
 B_pe_aug = [B_pe; 0];
 
