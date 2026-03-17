@@ -719,72 +719,68 @@ title('Motor PWM Responses for 1m Forward Step (Task 8)');
 xlabel('Time (s)'); ylabel('PWM (%)');
 legend('Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Location', 'EastOutside'); grid on;
 
-%% Yaw Control
+%% Problem 6: Yaw Rate Control (Damping)
 close all
 
-% reduced state can just be spi, and no integral state is needed.  
-A_y = [0];
+% (1 & 2) Reduced state is just yaw rate (r). No integral state needed.
+A_y = 0; % 1D system
+B_y = 1/J(3,3); 
 
-B_y = [1/J(3,3)];
+Q_y = 1;
+R_y = 1e7; % Penalize control effort to prevent aggressive motor saturation
+K_y = lqr(A_y, B_y, Q_y, R_y);
+fprintf('LQR Gain K_yaw: %.3f\n', K_y);
 
-A_y_aug = [0 1 0;
-           0 0 0;
-           1 0 0];
-
-Q_y = 10;
-R_y = 1e6;
-
-K_y = lqr(A_y, B_y, Q_y, R_y)
-
-%Transfer Functions and Stability ------------------------------------
-
-%open loop TF
+% (4, 5 & 6) Stability Analysis
 sys_N_ol = ss(A_y, B_y, K_y, 0);
 
 figure('Name', 'Yaw Stability', 'Position', [150, 100, 1000, 400]);
 subplot(1,2,1); margin(sys_N_ol);
 subplot(1,2,2); nyquist(sys_N_ol);
-xlim([-5, 5])
-ylim([-5, 5])
-sgtitle('Stability Analysis: Yaw LQR-PI');
+sgtitle('Stability Analysis: Yaw Rate LQR');
 
 [Gm_yaw, Pm_yaw, ~, ~] = margin(sys_N_ol);
 fprintf('Gain Margin: %.2f dB, Phase Margin: %.2f deg\n', 20*log10(Gm_yaw), Pm_yaw);
 
-
-%Closed-Loop Simulation -------------------------------------------
-
+% (7) Closed-Loop Simulation (Damping Initial Condition)
 A_cl_yaw = A_y - B_y*K_y;
 sys_cl_yaw = ss(A_cl_yaw, 0, 1, 0); % C=1, D=0
 
-t_sim = 0:0.01:10; % Slightly longer simulation to show settling
+t_sim = 0:0.01:5; % 5 seconds is plenty for yaw
+r0_yaw_rad = 100 * (pi/180); % Initial condition: 100 deg/s converted to rad/s
 
-r0_yaw = 100*(pi/180);
-
-[y_cl_yaw, t_cl, x_cl_yaw] = initial(sys_cl_yaw, r0_yaw, t_sim);
+[y_cl_yaw, t_cl, x_cl_yaw] = initial(sys_cl_yaw, r0_yaw_rad, t_sim);
 
 figure('Name', 'Yaw Step Response & PWM', 'Position', [200, 150, 800, 800]);
 subplot(2, 1, 1)
-plot(t_cl, x_cl_yaw, 'b', 'LineWidth', 2); hold on;
+% Plot converted back to deg/s for easier reading
+plot(t_cl, x_cl_yaw * (180/pi), 'b', 'LineWidth', 2); hold on; 
 plot(t_cl, zeros(size(t_cl)), 'r--', 'LineWidth', 1.5);
-title('Lateral Position Step Response (1m) (Task 7)');
-xlabel('Time (s)'); ylabel('East Position p_e (m)');
-legend('Actual Position', 'Reference'); grid on;
+title('Yaw Rate Damping from 100 deg/s (Task 7)');
+xlabel('Time (s)'); ylabel('Yaw Rate r (deg/s)');
+legend('Actual Rate', 'Target (0)'); grid on;
 
+% Estimate settling time using stepinfo logic adapted for initial conditions
+info = stepinfo(x_cl_yaw, t_cl, 0, 'SettlingTimeThreshold', 0.05);
+fprintf('Estimated time to damp yaw rate: %.2f seconds\n', info.SettlingTime);
 
-% PWM behavior with Mixer ------------------------------------------------
-L_cmd = -x_cl_lat * K_pe';
+% (8) PWM behavior with Mixer
+N_cmd = -x_cl_yaw * K_y; % Commanded YAWING moment
 F_hover = drone_mass_kg * 9.81; % We must maintain altitude!
 
-pwm_hist_long = zeros(length(t_cl), 4);
+pwm_hist_yaw = zeros(length(t_cl), 4);
 for i = 1:length(t_cl)
-    % Mix hover thrust with commanded pitching moment. Roll and Yaw are 0.
-    [pwm_pct, ~] = quad_mixer(F_hover, L_cmd(i), 0, 0, A_thrust, B_thrust, d, C_tau, F_min, F_max);
-    pwm_hist_long(i, :) = pwm_pct';
+    % Mix hover thrust with commanded yawing moment (N). Roll and Pitch are 0.
+    % Signature is (F, L, M, N, ...) -> N goes in the 4th slot!
+    [pwm_pct, ~] = quad_mixer(F_hover, 0, 0, N_cmd(i), A_thrust, B_thrust, d, C_tau, F_min, F_max);
+    pwm_hist_yaw(i, :) = pwm_pct';
 end
 
-subplot(3,1,3);
-plot(t_cl, pwm_hist_long, 'LineWidth', 1.5);
-title('Motor PWM Responses for 1m Forward Step (Task 8)');
-xlabel('Time (s)'); ylabel('PWM (%)');
+subplot(2,1,2);
+plot(t_cl, pwm_hist_yaw(:,1), 'g-', 'LineWidth', 2); hold on
+plot(t_cl, pwm_hist_yaw(:,2), 'LineWidth', 2); hold on
+plot(t_cl, pwm_hist_yaw(:,3), 'LineWidth', 1); hold on
+plot(t_cl, pwm_hist_yaw(:,4), '--','LineWidth', 2);
+title('Motor PWM Responses for Yaw Damping (Task 8)');
+xlabel('Time (s)'); ylabel('PWM Command');
 legend('Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Location', 'EastOutside'); grid on;
