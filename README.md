@@ -52,6 +52,9 @@ The model parameters are tuned specifically for the Crazyflie 2.1 nano quadcopte
 * **Operating Environment:** Standard day, sea-level conditions with constant gravity
 
 <img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/5eb071c0-232c-4cc8-9fa5-d8f9f852053c" />
+
+<img width="700" height="809" alt="image" src="https://github.com/user-attachments/assets/7ac54dae-9820-40fa-8b5c-a7955847fae2" />
+
 Source:  https://www.bitcraze.io/documentation/system/platform/cf2-coordinate-system/
 
 
