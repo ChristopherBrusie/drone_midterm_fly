@@ -598,13 +598,13 @@ pn_ref_step = ones(size(t_sim)); % 1 meter step command
 figure('Name', 'Forward Position Step Response & PWM', 'Position', [200, 150, 800, 800]);
 subplot(3,1,1);
 plot(t_cl, x_cl_long(:,1), 'b', 'LineWidth', 2); hold on;
-plot(t_cl, pn_ref_step, 'r', 'LineWidth', 1.5);
+plot(t_cl, pn_ref_step, 'r--', 'LineWidth', 1.5);
 title('Forward Position Step Response (1m) (Task 7)');
 xlabel('Time (s)'); ylabel('North Position p_n (m)');
 legend('Actual Position', 'Reference'); grid on;
 
 subplot(3,1,2);
-plot(t_cl, x_cl_long(:,3)*(180/pi), 'LineWidth', 2);
+plot(t_cl, x_cl_long(:,3)*(180/pi), 'g', 'LineWidth', 2);
 title('Pitch Angle (\theta) during Maneuver');
 xlabel('Time (s)'); ylabel('Pitch Angle (deg)'); grid on;
 
@@ -623,7 +623,8 @@ end
 subplot(3,1,3);
 plot(t_cl, pwm_hist_long(:,1), 'g-', 'LineWidth', 2); hold on
 plot(t_cl, pwm_hist_long(:,2), 'LineWidth', 2); hold on
-plot(t_cl, pwm_hist_long(:,3), 'LineWidth', 1); hold on
+plot(t_cl, pwm_hist_long(:,3), 'b-
+',LineWidth', 1); hold on
 plot(t_cl, pwm_hist_long(:,4), '--','LineWidth', 1);
 
 
@@ -685,13 +686,13 @@ pe_ref_step = ones(size(t_sim)); % 1 meter step command
 figure('Name', 'Lateral Position Step Response & PWM', 'Position', [200, 150, 800, 800]);
 subplot(3,1,1);
 plot(t_cl, x_cl_lat(:,1), 'b', 'LineWidth', 2); hold on;
-plot(t_cl, pe_ref_step, 'r', 'LineWidth', 1.5);
+plot(t_cl, pe_ref_step, 'r--', 'LineWidth', 1.5);
 title('Lateral Position Step Response (1m) (Task 7)');
 xlabel('Time (s)'); ylabel('East Position p_e (m)');
 legend('Actual Position', 'Reference'); grid on;
 
 subplot(3,1,2);
-plot(t_cl, x_cl_lat(:,3)*(180/pi), 'LineWidth', 2);
+plot(t_cl, x_cl_lat(:,3)*(180/pi), 'g', 'LineWidth', 2);
 title('Roll Angle (\theta) during Maneuver');
 xlabel('Time (s)'); ylabel('Roll Angle (deg)'); grid on;
 
@@ -709,9 +710,9 @@ end
 
 subplot(3,1,3);
 plot(t_cl, pwm_hist_long(:,1), 'g-', 'LineWidth', 2); hold on
-plot(t_cl, pwm_hist_long(:,2), 'LineWidth', 1); hold on
-plot(t_cl, pwm_hist_long(:,3), 'LineWidth', 2); hold on
-plot(t_cl, pwm_hist_long(:,4), '--','LineWidth', 1);
+plot(t_cl, pwm_hist_long(:,2), 'LineWidth', 2); hold on
+plot(t_cl, pwm_hist_long(:,3), 'LineWidth', 1); hold on
+plot(t_cl, pwm_hist_long(:,4), 'LineWidth', 1);
 
 
 
