@@ -727,7 +727,7 @@ A_y = 0; % 1D system
 B_y = 1/J(3,3); 
 
 Q_y = 1;
-R_y = 1e7; % Penalize control effort to prevent aggressive motor saturation
+R_y = 1e4; % Penalize control effort to prevent aggressive motor saturation
 K_y = lqr(A_y, B_y, Q_y, R_y);
 fprintf('LQR Gain K_yaw: %.3f\n', K_y);
 
