@@ -3,12 +3,12 @@
 
 clear; clc; close all;
 
-%% Define Quadcopter Parameters
+%% Quadcopter Parameters
 A_thrust = 0.091492681;
 B_thrust = 0.067673604;
 L = 0.046;
-C_tau = 0.005964552;
-d = L * (sqrt(2)/2);
+C_tau = 0.005964552; % torque
+d = L * (sqrt(2)/2); % distance between motor and drone COM
 
 % Physical Force Limits per motor (Based on ratio 0.0 to 1.0)
 F_min = 0;
@@ -25,25 +25,26 @@ figure('Position', [100, 100, 1000, 400]);
 
 % Plot Total Thrust
 subplot(1,3,1);
-plot(pwm_pct_plot, 4 * F_plot, 'b', 'LineWidth', 2);
+plot(pwm_pct_plot, 4 * F_plot, 'LineWidth', 2);
 title('Max Total Thrust vs PWM %');
-xlabel('PWM (%)'); ylabel('Force (N)'); grid on;
+xlabel('PWM (%)'); ylabel('Force (N)');
 
 % Plot Roll/Pitch Moment 
 subplot(1,3,2);
-plot(pwm_pct_plot, 2 * d * F_plot, 'r', 'LineWidth', 2);
+plot(pwm_pct_plot, 2 * d * F_plot, 'LineWidth', 2);
 title('Max Roll/Pitch Moment vs PWM %');
-xlabel('PWM (%)'); ylabel('Moment (Nm)'); grid on;
+xlabel('PWM (%)'); ylabel('Moment (Nm)');
 
 % Plot Yaw Moment
 subplot(1,3,3);
-plot(pwm_pct_plot, 2 * C_tau * F_plot, 'k', 'LineWidth', 2);
+plot(pwm_pct_plot, 2 * C_tau * F_plot, 'LineWidth', 2);
 title('Max Yaw Moment vs PWM %');
-xlabel('PWM (%)'); ylabel('Moment (Nm)'); grid on;
+xlabel('PWM (%)'); ylabel('Moment (Nm)'); 
 
-sgtitle('Nonlinear Actuator Mappings (Tasks 4 & 5)');
+sgtitle('Thrust and Moment Outputs');
 
 %% Test the Mixer (Tasks 1, 2, 3)
+
 % Let's command hover thrust + an aggressive roll command
 Fc_cmd = 0.323; % ~Hover weight
 Lc_cmd = 0.8; % Aggressive roll
@@ -131,8 +132,11 @@ pwm_data = data(:, 4);
 speed_data = data(:, 5);
 
 
+ft = fittype('a*sqrt(x) + b*x', 'independent', 'x', 'dependent', 'y');
 
-cf_2 = fit(pwm_data, speed_data, 'poly2') %% we should probably change to poly3, we are underfitting right now. 
+[cf_2, gof] = fit(pwm_data, speed_data, ft);
+
+disp(cf_2)
 
 predicted_speed = cf_2(pwm_data);
 
