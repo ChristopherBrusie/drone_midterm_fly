@@ -262,10 +262,11 @@ K_aeroo = [-10.2506 -0.3177 -0.4332;
             -7.7050 -7.7050 -7.5530].*10e-7;
 
 % these in rev/s
-n1 = (2073 + pwm_act_1*358.1 - 1.434*(pwm_act_1^2))/60;
-n2 = (2073 + pwm_act_2*358.1 - 1.434*(pwm_act_2^2))/60;
-n3 = (2073 + pwm_act_3*358.1 - 1.434*(pwm_act_3^2))/60;
-n4 = (2073 + pwm_act_4*358.1 - 1.434*(pwm_act_4^2))/60;
+n1 = (1826*sqrt(pwm_act_1) + 63.4*pwm_act_1)/60;
+n2 = (1826*sqrt(pwm_act_2) + 63.4*pwm_act_2)/60;
+n3 = (1826*sqrt(pwm_act_3) + 63.4*pwm_act_3)/60;
+n4 = (1826*sqrt(pwm_act_4) + 63.4*pwm_act_4)/60;
+
 
 theta_dot_sigma = 2*pi*(abs(n1) + abs(n2) + abs(n3) + abs(n4));
 
@@ -491,11 +492,14 @@ sys_cl = ss(A_closed_loop, B_cl_ref, [1 0 0], 0);
 figure
 subplot(1,2,1); bode(sys_cl)
 subplot(1,2,2); nyquist(sys_cl);
+sgtitle('LQR Altitude Regulation')
 
 % stability margin
 G = tf(sys_cl);
 figure
 margin(G)
+
+
 
 
 % Controller Simulation -----------------------------------------------
@@ -585,7 +589,7 @@ subplot(1,2,1); margin(L_ol_long);
 subplot(1,2,2); nyquist(L_ol_long);
 xlim([-5, 5])
 ylim([-5, 5])
-sgtitle('Stability Analysis: Forward Position LQR-PI (Task 5 & 6)');
+sgtitle('LQR-PI Forward Position Regulation Stability');
 
 [Gm_long, Pm_long, ~, ~] = margin(L_ol_long);
 fprintf('Gain Margin: %.2f dB, Phase Margin: %.2f deg\n', 20*log10(Gm_long), Pm_long);
@@ -603,7 +607,7 @@ figure('Name', 'Forward Position Step Response & PWM', 'Position', [200, 150, 80
 subplot(3,1,1);
 plot(t_cl, x_cl_long(:,1), 'b', 'LineWidth', 2); hold on;
 plot(t_cl, pn_ref_step, 'r', 'LineWidth', 1.5);
-title('Forward Position Step Response (1m) (Task 7)');
+title('Forward Position Step Response (1m)');
 xlabel('Time (s)'); ylabel('North Position p_n (m)');
 legend('Actual Position', 'Reference'); grid on;
 
@@ -631,7 +635,7 @@ plot(t_cl, pwm_hist_long(:,3), 'LineWidth', 1); hold on
 plot(t_cl, pwm_hist_long(:,4), '--','LineWidth', 1);
 
 
-title('Motor PWM Responses for 1m Forward Step (Task 8)');
+title('Motor PWM Responses for 1m Forward Step');
 xlabel('Time (s)'); ylabel('PWM (%)');
 legend('Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Location', 'EastOutside'); grid on;
 
@@ -690,7 +694,7 @@ figure('Name', 'Lateral Position Step Response & PWM', 'Position', [200, 150, 80
 subplot(3,1,1);
 plot(t_cl, x_cl_lat(:,1), 'b', 'LineWidth', 2); hold on;
 plot(t_cl, pe_ref_step, 'r', 'LineWidth', 1.5);
-title('Lateral Position Step Response (1m) (Task 7)');
+title('Lateral Position Step Response (1m)');
 xlabel('Time (s)'); ylabel('East Position p_e (m)');
 legend('Actual Position', 'Reference'); grid on;
 
@@ -719,7 +723,7 @@ plot(t_cl, pwm_hist_long(:,4), '--','LineWidth', 1);
 
 
 
-title('Motor PWM Responses for 1m Forward Step (Task 8)');
+title('Motor PWM Responses for 1m Forward Step');
 xlabel('Time (s)'); ylabel('PWM (%)');
 legend('Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Location', 'EastOutside'); grid on;
 
@@ -731,7 +735,7 @@ A_y = 0; % 1D system
 B_y = 1/J(3,3); 
 
 Q_y = 1;
-R_y = 1e4; % Penalize control effort to prevent aggressive motor saturation
+R_y = 1e7; % Penalize control effort to prevent aggressive motor saturation
 K_y = lqr(A_y, B_y, Q_y, R_y);
 fprintf('LQR Gain K_yaw: %.3f\n', K_y);
 
@@ -760,7 +764,7 @@ subplot(2, 1, 1)
 % Plot converted back to deg/s for easier reading
 plot(t_cl, x_cl_yaw * (180/pi), 'b', 'LineWidth', 2); hold on; 
 plot(t_cl, zeros(size(t_cl)), 'r--', 'LineWidth', 1.5);
-title('Yaw Rate Damping from 100 deg/s (Task 7)');
+title('Yaw Rate Damping from 100 deg/s');
 xlabel('Time (s)'); ylabel('Yaw Rate r (deg/s)');
 legend('Actual Rate', 'Target (0)'); grid on;
 
@@ -785,6 +789,6 @@ plot(t_cl, pwm_hist_yaw(:,1), 'g-', 'LineWidth', 2); hold on
 plot(t_cl, pwm_hist_yaw(:,2), 'LineWidth', 2); hold on
 plot(t_cl, pwm_hist_yaw(:,3), 'LineWidth', 1); hold on
 plot(t_cl, pwm_hist_yaw(:,4), '--','LineWidth', 2);
-title('Motor PWM Responses for Yaw Damping (Task 8)');
+title('Motor PWM Responses for Yaw Damping');
 xlabel('Time (s)'); ylabel('PWM Command');
 legend('Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Location', 'EastOutside'); grid on;
