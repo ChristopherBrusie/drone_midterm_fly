@@ -2,9 +2,8 @@
 
 ## Overview
 
-This repository contains a complete modeling, simulation, and control architecture for an autonomous micro-unmanned aerial vehicle (UAV). Developed as part of the ESE 4481 Autonomous Aerial Vehicle Control Laboratory under Dr. Sankalp Bhan, the project bridges the gap between high-fidelity MATLAB simulation and physical hardware implementation on the Crazyflie 2.1 platform.
+This repository contains a complete modeling, simulation, and control architecture for an autonomous micro-unmanned aerial vehicle (CrazyFlie 2.1). Developed as part of the ESE 4481 Autonomous Aerial Vehicle Control Laboratory under Dr. Sankalp Bhan.
 
-The software stack currently features nonlinear dynamics modeling, aerodynamic system identification, a custom control allocation mixer, and Linear Quadratic Regulator (LQR) control schemes. Future iterations will integrate state estimation and trajectory tracking directly onto the physical drone hardware.
 
 ## Core Capabilities
 
@@ -71,9 +70,10 @@ Source:  https://www.bitcraze.io/documentation/system/platform/cf2-coordinate-sy
 * [x] Derivation of 12-state Kinematics and Dynamics
 * [x] Motor System Identification and 16-state Augmentation
 * [x] Control Mixer Design with Saturation Handling
-* [ ] LQR-PI Controller Design for Decoupled Axes
+* [x] LQR-PI Controller Design for Decoupled Axes
+* [ ] Vector Field Guidance for path following
 * [ ] Extended Kalman Filter (EKF) State Estimation
-* [ ] Path Planning and Trajectory Tracking
+* [ ] Integration
 * [ ] Hardware-in-the-loop (HITL) Testing
 * [ ] Deployment to Physical Crazyflie Hardware
 
