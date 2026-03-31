@@ -155,14 +155,12 @@ function [x_est, x_hist, P_post] = run_estimation(data)
         % Normal equations: (H' * W * H + W_prior) * delta_x = H' * W * delta_z - W_prior * (x_est - x_prior)
         W_matrix = W_meas * eye(2*n_active);
         
-        %info_matrix = H' * W_matrix * H + W_prior;
-        info_matrix = H' * W_matrix * H;
-        gradient = H' * W_matrix * delta_z;
-        %gradient = H' * W_matrix * delta_z - W_prior * (x_est - x_prior);
+        info_matrix = H' * W_matrix * H + W_prior;
+        info_matrix = H' * W_matrix * H + W_prior;
+        gradient = H' * W_matrix * delta_z - W_prior * (x_est - x_prior);
         
         % Solve for state delta
         delta_x = info_matrix \ gradient;
-        %disp(norm(delta_x))
         
         % Update estimate
         x_est = x_est + delta_x;

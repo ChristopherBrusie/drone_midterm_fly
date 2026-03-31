@@ -148,7 +148,7 @@ function [X_c, state] = getGuidance(p, current_state, L, R, r_min)
 end
 
 function X_c = followLine(r, q, p, r_min)
-    k_path = 1.0 / r_min; 
+    k_path = 1 / r_min; 
     X_inf = 0.8 * (pi/2); 
     X_q = atan2(q(2), q(1)); 
     e_py = -sin(X_q)*(p(1) - r(1)) + cos(X_q)*(p(2) - r(2));
