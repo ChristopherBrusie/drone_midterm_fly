@@ -71,7 +71,7 @@ Source:  https://www.bitcraze.io/documentation/system/platform/cf2-coordinate-sy
 * [x] Motor System Identification and 16-state Augmentation
 * [x] Control Mixer Design with Saturation Handling
 * [x] LQR-PI Controller Design for Decoupled Axes
-* [ ] Vector Field Guidance for path following
+* [x] Vector Field Guidance for path following
 * [ ] Extended Kalman Filter (EKF) State Estimation
 * [ ] Integration
 * [ ] Hardware-in-the-loop (HITL) Testing
