@@ -26,7 +26,6 @@ path_history = zeros(length(time), 2);
 chi_history = zeros(length(time), 1);
 phi_history = zeros(length(time), 1);
 
-% --- Simulation Loop ---
 for i = 1:length(time)
     
     % 1. Determine commanded heading and update state
@@ -36,7 +35,7 @@ for i = 1:length(time)
     diff = chi_c - chi; 
     diff = mod(diff + pi, 2*pi) - pi; % wrap to [-pi, pi]
     
-    chi_dot_cmd = diff * 0.4; % Proportional gain for turn rate
+    chi_dot_cmd = diff * 2; % Proportional gain for turn rate
     
     % 3. Calculate Commanded Acceleration & Bank Angle
     ay_cmd = V * chi_dot_cmd; 
@@ -66,18 +65,17 @@ end
 
 % 1. Path Plot
 figure('Name', 'Drone Trajectory', 'Position', [100, 100, 700, 600]);
-plot(path_history(:,2), path_history(:,1), 'b', 'LineWidth', 2); hold on;
+plot(path_history(:,2), path_history(:,1), 'LineWidth', 2); hold on;
 plotIdealPath(L, R); % Helper to plot the ideal rounded square
-plot(0, 0, 'go', 'MarkerFaceColor', 'g', 'MarkerSize', 8); % Start
 axis equal; grid on;
 xlabel('East (m)'); ylabel('North (m)');
 title('Drone Path: Vector Field Guidance');
-legend('Drone Trajectory', 'Ideal Path', 'Start Position');
+legend('Drone Trajectory', 'Ideal Path', 'Location', 'southwest');
 
 % 2. Time Histories
 figure('Name', 'Time Histories', 'Position', [850, 100, 600, 800]);
 subplot(3,1,1);
-plot(time, path_history(:,1), 'r', time, path_history(:,2), 'b', 'LineWidth', 1.5);
+plot(time, path_history(:,1), time, path_history(:,2), 'LineWidth', 1.5);
 grid on; ylabel('Position (m)'); title('Position vs Time'); legend('North', 'East');
 
 subplot(3,1,2);
@@ -85,9 +83,9 @@ plot(time, rad2deg(chi_history), 'k', 'LineWidth', 1.5);
 grid on; ylabel('Heading (deg)'); title('Heading vs Time');
 
 subplot(3,1,3);
-plot(time, rad2deg(phi_history), 'b', 'LineWidth', 1.5); hold on;
-yline(rad2deg(phi_max), 'r--', 'Max Bank (+0.4g)');
-yline(-rad2deg(phi_max), 'r--', 'Max Bank (-0.4g)');
+plot(time, rad2deg(phi_history), 'LineWidth', 1.5); hold on;
+yline(rad2deg(phi_max), 'r', '+0.4g Bank');
+yline(-rad2deg(phi_max), 'r', '-0.4g Bank');
 grid on; xlabel('Time (s)'); ylabel('Bank Angle (deg)'); title('Commanded Bank Angle');
 
 % 3. Vector Field Visualization
@@ -107,7 +105,7 @@ quiver(E_grid, N_grid, U, V_vf, 0.5, 'color', [0.5 0.5 0.5]); hold on;
 plotIdealPath(L, R);
 axis equal; grid on;
 xlabel('East (m)'); ylabel('North (m)');
-title('Vector Field (Line + Orbit Switching)');
+title('Vector Field With Switching');
 
 % =========================================================
 % Functions
