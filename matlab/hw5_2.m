@@ -1,10 +1,8 @@
-% =========================================================
-% Vector Field Guidance & Simulation (Complete)
-% =========================================================
+%% Vector Guidance
 clear; close all; clc;
 set(0, 'DefaultFigureWindowStyle', 'normal');
 
-% --- Physical Constraints & Parameters ---
+% params
 g = 9.81;
 V = 30;                 % Constant speed (m/s)
 a_max = 0.4 * g;        % Max lateral acceleration
@@ -14,65 +12,63 @@ L = 10 * r_min;         % Square side length
 half_L = L / 2;
 phi_max = atan(0.4);    % Maximum allowed bank angle
 
-% --- Simulation Parameters ---
-dt = 0.1;               
+% sim params
+dt = 0.01;               
 time = 0:dt:450;        % Total simulation time
 p = [0; 0];             % Start at (0,0) North-East
 chi = 0;                % Start flying North (0 rad)
 state = 1;              % Initial State (1 = Line 1)
 
-% Data logging
+% data 
 path_history = zeros(length(time), 2);
 chi_history = zeros(length(time), 1);
 phi_history = zeros(length(time), 1);
 
 for i = 1:length(time)
     
-    % 1. Determine commanded heading and update state
+    % get commanded heading
     [chi_c, state] = getGuidance(p, state, L, R, r_min);
     
-    % 2. P-Controller for turn rate
+    % p controller
     diff = chi_c - chi; 
     diff = mod(diff + pi, 2*pi) - pi; % wrap to [-pi, pi]
     
-    chi_dot_cmd = diff * 2; % Proportional gain for turn rate
+    chi_dot_cmd = diff * 2; % p gain here
     
-    % 3. Calculate Commanded Acceleration & Bank Angle
+    % get commanded bank angle
     ay_cmd = V * chi_dot_cmd; 
     phi_c = atan(ay_cmd / g); 
     
-    % Apply constraints
+    % clamp
     phi_c = max(-phi_max, min(phi_max, phi_c)); 
     
-    % 4. Actual turn rate produced by bounded bank angle
+    % actual turn rate
     chi_dot = (g / V) * tan(phi_c); 
     
-    % 5. Kinematic Update
+    %update
     chi = chi + chi_dot * dt;
     chi = mod(chi + pi, 2*pi) - pi;
     p(1) = p(1) + V * cos(chi) * dt; % North
     p(2) = p(2) + V * sin(chi) * dt; % East
     
-    % Log data
+    % log
     path_history(i, :) = p';
     chi_history(i) = chi;
     phi_history(i) = phi_c;
 end
 
-% =========================================================
-% Plotting
-% =========================================================
+% plotting
 
-% 1. Path Plot
+% path
 figure('Name', 'Drone Trajectory', 'Position', [100, 100, 700, 600]);
 plot(path_history(:,2), path_history(:,1), 'LineWidth', 2); hold on;
 plotIdealPath(L, R); % Helper to plot the ideal rounded square
 axis equal; grid on;
 xlabel('East (m)'); ylabel('North (m)');
-title('Drone Path: Vector Field Guidance');
+title('Drone Path (CW)');
 legend('Drone Trajectory', 'Ideal Path', 'Location', 'southwest');
 
-% 2. Time Histories
+% time histories
 figure('Name', 'Time Histories', 'Position', [850, 100, 600, 800]);
 subplot(3,1,1);
 plot(time, path_history(:,1), time, path_history(:,2), 'LineWidth', 1.5);
@@ -88,7 +84,7 @@ yline(rad2deg(phi_max), 'r', '+0.4g Bank');
 yline(-rad2deg(phi_max), 'r', '-0.4g Bank');
 grid on; xlabel('Time (s)'); ylabel('Bank Angle (deg)'); title('Commanded Bank Angle');
 
-% 3. Vector Field Visualization
+% vector field
 figure('Name', 'Vector Field', 'Position', [1500, 100, 700, 600]);
 [E_grid, N_grid] = meshgrid(linspace(-0.6*L, 0.6*L, 35), linspace(-0.6*L, 0.6*L, 35));
 U = zeros(size(N_grid)); V_vf = zeros(size(N_grid));
@@ -107,9 +103,7 @@ axis equal; grid on;
 xlabel('East (m)'); ylabel('North (m)');
 title('Vector Field With Switching');
 
-% =========================================================
-% Functions
-% =========================================================
+% functions
 
 function [X_c, state] = getGuidance(p, current_state, L, R, r_min)
     % Manages switching between lines and orbits using Half-Planes
@@ -122,7 +116,7 @@ function [X_c, state] = getGuidance(p, current_state, L, R, r_min)
     c3 = [-half_L + R; -half_L + R]; % Bottom-Left
     c4 = [half_L - R; -half_L + R];  % Top-Left
 
-    % State Machine / Switching Logic
+    % State Machine
     if state == 1 && p(2) >= half_L - R && p(1) >= 0; state = 2; end
     if state == 2 && p(1) <= half_L - R && p(2) >= 0; state = 3; end
     if state == 3 && p(1) <= -half_L + R && p(2) >= 0; state = 4; end
@@ -154,7 +148,7 @@ function X_c = followLine(r, q, p, r_min)
 end
 
 function X_c = followOrbit(c, radius, dir, p)
-    k_orbit = 2.0; % Tuned for smooth convergence
+    k_orbit = 2.0; % this is smooth
     d = norm(p - c);
     psi = atan2(p(2) - c(2), p(1) - c(1)); 
     X_c = psi + dir * ( (pi/2) + atan(k_orbit * ((d - radius)/radius)) );
@@ -185,3 +179,6 @@ function plotIdealPath(L, R)
     plot([half_L, half_L], [half_L-R, -half_L+R], 'r--', 'LineWidth', 1.5);
     plot([-half_L, -half_L], [half_L-R, -half_L+R], 'r--', 'LineWidth', 1.5);
 end
+
+
+
